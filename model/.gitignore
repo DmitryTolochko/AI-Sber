@@ -1,0 +1,13 @@
+# Virtual environment
+/Include
+/Lib
+/Scripts
+pyvenv.cfg
+
+# Environment variables
+.env
+
+# Model Files
+/hf_model
+/share
+
