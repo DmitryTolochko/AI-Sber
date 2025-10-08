@@ -10,17 +10,26 @@ import nltk
 # Скачиваем необходимые данные для nltk (если еще не скачаны)
 try:
     nltk.data.find('tokenizers/punkt')
+    nltk.data.find('tokenizers/punkt_tab')
+    nltk.data.find('tokenizers/wordnet')
+    nltk.data.find('tokenizers/omw-1.4')
 except LookupError:
     nltk.download('punkt')
+    nltk.download('punkt_tab')
+    nltk.download('wordnet')
+    nltk.download('omw-1.4')
+
+
+
 
 # --- Параметры ---
 MODEL_ID = "Helsinki-NLP/opus-mt-ru-en"
-DATA_PATH = "dmitry_dataset_no_duplicates.json"
+DATA_PATH = "datasets/nanai-evenki.json"
 CACHE_DIR = "hf_model"
 OUTPUT_DIR = "./nanai_lora"
-BATCH_SIZE = 4
-EPOCHS = 3
-LEARNING_RATE = 5e-4
+BATCH_SIZE = 2
+EPOCHS = 6
+LEARNING_RATE = 2e-4
 
 # --- 1. Загружаем датасет ---
 print("[INFO] Загружаем датасет...")
@@ -185,6 +194,7 @@ trainer = Seq2SeqTrainer(
     eval_dataset=tokenized_val,
     tokenizer=tokenizer,
     compute_metrics=compute_metrics,
+    
 )
 
 # --- 6. Проверка данных перед обучением ---
@@ -201,6 +211,7 @@ trainer.train()
 # --- 8. Финальная оценка ---
 print("\n[INFO] Финальная оценка на валидационной выборке...")
 eval_results = trainer.evaluate()
+
 print(f"Финальные метрики: {eval_results}")
 
 # --- 9. Сохранение модели ---
