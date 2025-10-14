@@ -8,7 +8,7 @@ from peft import PeftModel
 load_dotenv()
 
 HUGGING_FACE_API_TOKEN = os.getenv("HUGGING_FACE_API_TOKEN")
-_MODEL_ID = "Helsinki-NLP/opus-mt-ru-en"
+_MODEL_ID = "facebook/mbart-large-50-many-to-many-mmt"
 _CACHE_DIR = "hf_model"
 _LORA_DIR = "./nanai_lora"
 
@@ -16,7 +16,7 @@ _translator = None
 _device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def get_translator():
+def get_translator(lora_model_dir):
     """
     Возвращает объект Translator.
     Загружает модель и LoRA, если они ещё не загружены.
@@ -31,10 +31,10 @@ def get_translator():
 
         print("[INFO] Загружаем базовую модель и LoRA...")
         base_model = AutoModelForSeq2SeqLM.from_pretrained(_MODEL_ID, cache_dir=_CACHE_DIR)
-        model_with_lora = PeftModel.from_pretrained(base_model, _LORA_DIR)
+        model_with_lora = PeftModel.from_pretrained(base_model, lora_model_dir)
         model_with_lora.to(_device)
 
-        tokenizer = AutoTokenizer.from_pretrained(_LORA_DIR)
+        tokenizer = AutoTokenizer.from_pretrained(lora_model_dir)
 
         # Создаём обёртку Translator
         _translator = Translator(model_with_lora, tokenizer, _device)
