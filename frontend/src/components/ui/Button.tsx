@@ -13,18 +13,13 @@ export default function Button({
   children,
   onClick,
   className,
-  active,
   disabled,
 }: ButtonProps) {
   return (
     <button
       disabled={disabled}
       onClick={onClick}
-      className={clsx(
-        "flex w-fit py-2 px-4 hover:cursor-pointer",
-        active ? "bg-red-500" : "bg-blue-500",
-        className
-      )}
+      className={clsx("flex font-normal hover:cursor-pointer", className)}
     >
       {children}
     </button>

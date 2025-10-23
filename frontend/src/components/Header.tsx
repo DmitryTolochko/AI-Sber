@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation";
 import Button from "./ui/Button";
 import useNavigationStore from "@/hooks/useNavigationStore";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import clsx from "clsx";
+import ChatIcon from "@/icons/ChatIcon";
+import FavoritesIcon from "@/icons/FavoritesIcon";
+import HistroyIcon from "@/icons/HistroyIcon";
 
 export default function Header() {
   const router = useRouter();
@@ -17,25 +21,48 @@ export default function Header() {
   }, [navigationTab]);
 
   return (
-    <header className="w-full py-5 flex justify-between items-center">
-      <div className="text-3xl">Переводчик</div>
+    <header className="w-full py-[0.833vw] flex justify-between items-center border-b border-[#B8B8B8] px-[10.417vw] [box-shadow:0_0_5.5_0_#0000001F]">
+      <div className="text-[1.389vw] text-[#2C734E]">
+        <span className="font-medium">CБЕР</span> Переводчик
+      </div>
+
       <div className="flex gap-2">
         <Button
-          active={navigationTab === "translator"}
+          className={clsx(
+            "text-[1.111vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
+            navigationTab === "translator" && "text-[#2C734E]"
+          )}
           onClick={() => setNavigationTab("translator")}
         >
+          <div className="size-[1.806vw]">
+            <ChatIcon />
+          </div>
           Переводчик
         </Button>
+
         <Button
-          active={navigationTab === "favorites"}
+          className={clsx(
+            "text-[1.111vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
+            navigationTab === "favorites" && "text-[#2C734E]"
+          )}
           onClick={() => setNavigationTab("favorites")}
         >
+          <div className="size-[1.806vw]">
+            <FavoritesIcon />
+          </div>
           Избранные переводы
         </Button>
+
         <Button
-          active={navigationTab === "history"}
+          className={clsx(
+            "text-[1.111vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
+            navigationTab === "history" && "text-[#2C734E]"
+          )}
           onClick={() => setNavigationTab("history")}
         >
+          <div className="size-[1.806vw]">
+            <HistroyIcon />
+          </div>
           История
         </Button>
       </div>

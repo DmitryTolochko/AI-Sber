@@ -19,7 +19,10 @@ export default function Translator() {
   };
 
   return (
-    <div className="pt-10">
+    <div className="pt-[4.167vw]">
+      <h1 className="text-[1.667vw] text-[#2C734E] mb-[0.972vw] font-semibold">
+        Нанайско-русский онлайн переводчик
+      </h1>
       <LanguageSwitcher
         activeTargetLanguage={targetLanguage}
         onChange={handleTargetLanguageSwitch}

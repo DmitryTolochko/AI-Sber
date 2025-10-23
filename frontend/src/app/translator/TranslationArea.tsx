@@ -7,7 +7,7 @@ export default function TranslationArea() {
   const [translatedText, setTranslatedText] = useState("");
   const [height1, setHeight1] = useState<number>(0);
   const [height2, setHeight2] = useState<number>(0);
-  const syncHeight = Math.max(height1, height2);
+  const [syncHeight, setSyncHeight] = useState<number>(0);
 
   const debouncedOriginal = useDebouncedValue(originalText, 500) as string;
 
@@ -27,8 +27,12 @@ export default function TranslationArea() {
     };
   }, [debouncedOriginal]);
 
+  useEffect(() => {
+    setSyncHeight(Math.max(height1, height2));
+  }, [height1, height2]);
+
   return (
-    <div className="grid grid-cols-2 mt-5 gap-5 items-stretch">
+    <div className="grid grid-cols-2 px-[1.389vw] pb-[1.389vw] pt-[2.083vw] gap-[1.389vw] items-stretch bg-linear-to-r from-[#D9E4D9] to-[#114711] rounded-[1.111vw] -mt-[1.042vw]">
       <TextArea
         value={originalText}
         onChange={setOriginalText}
@@ -36,7 +40,9 @@ export default function TranslationArea() {
         maxLength={200}
         syncHeight={syncHeight}
         onHeightChange={setHeight1}
-        className="bg-gray-100"
+        className="bg-white border-[0.5px] border-[#B8B8B8] font-semibold text-[1.667vw]"
+        copy={true}
+        tts={true}
       />
       <TextArea
         placeholder="Здесь появится перевод..."
@@ -44,6 +50,9 @@ export default function TranslationArea() {
         disabled
         syncHeight={syncHeight}
         onHeightChange={setHeight2}
+        className="bg-white border-[0.5px] border-[#B8B8B8] font-semibold text-[1.667vw]"
+        copy={true}
+        tts={true}
       />
     </div>
   );

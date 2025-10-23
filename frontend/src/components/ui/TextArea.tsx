@@ -1,6 +1,9 @@
 "use client";
 
+import CopyIcon from "@/icons/CopyIcon";
+import SpeakerIcon from "@/icons/SpeakerIcon";
 import { useEffect, useRef, useCallback, TextareaHTMLAttributes } from "react";
+import Button from "./Button";
 
 interface TextAreaProps
   extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
@@ -13,6 +16,8 @@ interface TextAreaProps
   className?: string;
   showCharCount?: boolean;
   syncHeight?: number;
+  copy?: boolean;
+  tts?: boolean;
   onHeightChange?: (height: number) => void;
 }
 
@@ -27,6 +32,8 @@ export default function TextArea({
   showCharCount = true,
   syncHeight,
   onHeightChange,
+  copy = false,
+  tts = false,
   ...props
 }: TextAreaProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -87,13 +94,32 @@ export default function TextArea({
         onChange={handleChange}
         placeholder={placeholder}
         maxLength={maxLength}
-        className={`w-full overflow-hidden px-4 py-3 pb-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200 ${className}`}
+        className={`w-full overflow-hidden p-[1.111vw] pb-[3.333vw] rounded-lg border border-gray-300 focus:outline-none  resize-none ${className}`}
         {...props}
       />
-
+      {copy && (
+        <Button
+          className="absolute bottom-[1.111vw] left-[1.111vw] size-[1.806vw]"
+          onClick={() => {
+            console.log("Copy");
+          }}
+        >
+          <CopyIcon />
+        </Button>
+      )}
+      {tts && (
+        <Button
+          className="absolute bottom-[1.111vw] left-[3.333vw] size-[1.806vw]"
+          onClick={() => {
+            console.log("TTS");
+          }}
+        >
+          <SpeakerIcon />
+        </Button>
+      )}
       {maxLength && showCharCount && (
         <div
-          className={`absolute bottom-2 right-3 text-sm ${
+          className={`absolute bottom-[1.111vw] right-[1.111vw] text-[1.111vw] ${
             isNearLimit ? "text-red-500" : "text-gray-400"
           }`}
         >
