@@ -1,0 +1,21 @@
+.idea/
+.vscode/
+finetuning/__pycache__/
+
+# Virtual environment
+/Include
+/Lib
+/Scripts
+pyvenv.cfg
+
+# Environment variables
+.env
+
+# Model Files
+/models/hf
+/models/ft
+/share
+
+# Configs
+/finetuning/finetune_cfg.yaml
+
