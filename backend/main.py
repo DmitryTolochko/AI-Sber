@@ -13,10 +13,6 @@ load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Управление жизненным циклом приложения.
-    Загружает модели при старте и очищает ресурсы при остановке.
-    """
     try:
         print("Server starting")
         get_translation_service()
@@ -28,7 +24,6 @@ async def lifespan(app: FastAPI):
         sys.exit(1)
     yield
 
-
 app = FastAPI(
     title="AI-Sber Translation API",
     description="API для перевода текста между русским и нанайским языками",
@@ -36,13 +31,9 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-origins = [
-    "http://localhost:3000",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[ "http://localhost:3000" ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal
 
 class TranslatorConfig:
     def __init__(self, hugging_face_token:str, model_id: str,  cache_dir: str, lora_dir: str, filenames: list[str], target_language: Literal["russian", "nanai"] = "russian",):
