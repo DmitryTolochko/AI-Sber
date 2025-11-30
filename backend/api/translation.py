@@ -48,10 +48,14 @@ def get_translation_service() -> TranslationService:
 )
 async def translate_to_russian(
         nanai_text: str,
+        attempt: int,
 ) -> BaseModelRead:
 
     service = get_translation_service()
-    translation_rus = service.translate(nanai_text, target_language="russian")
+    if attempt > 1:
+        translation_rus = service.translate_with_attempts(nanai_text,attempt, target_language="russian")
+    else:
+        translation_rus = service.translate(nanai_text, target_language="russian")
     
     if not translation_rus:
         raise NotFoundException(detail="Failed to translate")
@@ -66,9 +70,13 @@ async def translate_to_russian(
 )
 async def translate_to_nanai(
         russian_text: str,
+        attempt: int,
 ) -> BaseModelRead:
     service = get_translation_service()
-    translation_nanai = service.translate(russian_text, target_language="nanai")
+    if attempt > 1:
+        translation_nanai = service.translate_with_attempts(russian_text,attempt,target_language="nanai")
+    else:
+        translation_nanai = service.translate(russian_text, target_language="nanai")
     
     if not translation_nanai:
         raise NotFoundException(detail="Failed to translate")
