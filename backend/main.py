@@ -8,8 +8,11 @@ from api import api_router
 from api.translation import get_translation_service
 from fastapi.middleware.cors import CORSMiddleware
 
+load_dotenv("example.env")
 
-load_dotenv()
+
+# app = FastAPI()
+# app.add_middleware()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -24,6 +27,7 @@ async def lifespan(app: FastAPI):
         sys.exit(1)
     yield
 
+
 app = FastAPI(
     title="AI-Sber Translation API",
     description="API для перевода текста между русским и нанайским языками",
@@ -33,7 +37,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[ "http://localhost:3000" ],
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
