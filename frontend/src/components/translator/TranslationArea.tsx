@@ -3,10 +3,17 @@ import React, { useEffect, useState } from "react";
 import useDebouncedValue from "@/hooks/useDebouncedValue";
 import useTranslationStore from "@/hooks/useTranslationStore";
 import useFavoriteTranslationsStore from "@/hooks/useFavoriteTransaltionsStore";
+import useAlternativeTranslationsStore from "@/hooks/useAlternativeTranslationsStore";
+import useUsagesStore from "@/hooks/useUsagesStore";
 import useSyncValues from "@/hooks/useSyncValues";
-import { fetchTranslation } from "@/utils/axiosUtils";
+import {
+  fetchWordUsages,
+  fetchSentencesUsages,
+  fetchTranslation,
+} from "@/utils/axiosUtils";
 
 export default function TranslationArea() {
+  // ------------------------------ Сторы для данных ------------------------------
   const {
     translateTo,
     originalText,
@@ -19,31 +26,71 @@ export default function TranslationArea() {
     removeFavoriteTranslation,
     favoriteTranslations,
   } = useFavoriteTranslationsStore();
+  const { addAlternativeTranslation, clearAlternativeTranslations } =
+    useAlternativeTranslationsStore();
+  const { setWordUsages, setSentencesUsages, clearUsages } = useUsagesStore();
+  // -----------------------------------------------------------------------------------
+
   const debouncedOriginal = useDebouncedValue(originalText, 500) as string;
   const [inFavorites, setInFavorites] = useState<boolean>(false);
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [attemptCount, setAttemptCount] = useState<number>(1);
   const [favoriteTranslationId, setFavoriteTranslationId] = useState<
     number | undefined
   >(undefined);
 
+  // Запрос на перевод при изменении debounce значения оригинального текста
   useEffect(() => {
     if (isSwapping || isFetching) return;
     if (debouncedOriginal === "") {
-      setTranslatedText("");
+      clearAlternativeTranslations();
+      clearUsages();
       return;
     }
 
     setIsFetching(true);
-    fetchTranslation(debouncedOriginal, translateTo)
+    fetchTranslation(debouncedOriginal, translateTo, attemptCount)
       .then((translatedText) => {
         setTranslatedText(translatedText);
+
+        if (debouncedOriginal.split(" ").length === 1) {
+          // Очищаем использования перед получением новых
+          fetchUsages(debouncedOriginal);
+        }
       })
       .finally(() => {
+        clearAlternativeTranslations();
         setIsFetching(false);
       });
   }, [debouncedOriginal]);
 
+  // Получаем альтернативные переводы
+  const fetchAlternativeTranslations = (attempt: number) => {
+    if (attempt === 1) return;
+
+    setAttemptCount(attempt);
+    setIsFetching(true);
+
+    fetchTranslation(debouncedOriginal, translateTo, attempt)
+      .then((translatedText) => {
+        addAlternativeTranslation(translatedText);
+      })
+      .finally(() => {
+        setIsFetching(false);
+      });
+  };
+
+  const fetchUsages = (word: string) => {
+    fetchWordUsages(word).then((usages) => {
+      setWordUsages(usages);
+    });
+    fetchSentencesUsages(word).then((usages) => {
+      setSentencesUsages(usages);
+    });
+  };
+
+  // Меняем местами тексты при смене языка
   useEffect(() => {
     setIsSwapping(true);
     setOriginalText(translatedText);
@@ -100,7 +147,7 @@ export default function TranslationArea() {
   };
 
   return (
-    <div className="grid grid-cols-2 px-[1.389vw] pb-[1.389vw] pt-[2.083vw] gap-[1.389vw] items-stretch bg-linear-to-r from-[#D9E4D9] to-[#114711] rounded-[1.111vw] -mt-[1.042vw]">
+    <div className="relative grid grid-cols-2 px-[1.389vw] pb-[1.389vw] pt-[2.083vw] gap-[1.389vw] items-stretch bg-linear-to-r from-[#D9E4D9] to-[#114711] rounded-[1.111vw] -mt-[1.042vw] z-[9]">
       <TextArea
         value={originalText}
         onChange={setOriginalText}
@@ -125,6 +172,16 @@ export default function TranslationArea() {
         inFavorites={inFavorites}
         onRemoveFromFavorites={onRemoveFromFavorites}
       />
+
+      {translatedText && (
+        <button
+          onClick={() => fetchAlternativeTranslations(attemptCount + 1)}
+          disabled={isFetching || isSwapping}
+          className="bg-white absolute right-[2.083vw] border-[1px] border-[#B8B8B8] disabled:opacity-50 disabled:cursor-not-allowed bottom-[2.083vw] py-[0.313vw] px-[0.726vw] hover:cursor-pointer rounded-full w-max"
+        >
+          Перевести по-другому
+        </button>
+      )}
     </div>
   );
 }
