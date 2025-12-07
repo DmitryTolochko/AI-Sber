@@ -103,3 +103,24 @@ export interface UsagesStore {
   ) => void;
   clearUsages: () => void;
 }
+
+export interface HistoryTranslationItem {
+  id: number;
+  sourceLanguage: "nanai" | "russian";
+  sourceText: string;
+  targetLanguage: "nanai" | "russian";
+  targetText: string;
+  translatedAt: Date;
+}
+
+export interface HistoryStore {
+  historyTranslations: HistoryTranslationItem[];
+  addHistoryTranslation: (translation: HistoryTranslationItem) => void;
+  removeHistoryTranslation: (id: HistoryTranslationItem["id"]) => void;
+}
+
+export interface HistoryItemProps {
+  sourceLanguage: string;
+  content: string;
+  onDelete?: () => void;
+}

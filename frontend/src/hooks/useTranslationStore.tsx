@@ -24,7 +24,9 @@ const useTranslationStore = create<TranslationStore>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) =>
         Object.fromEntries(
-          Object.entries(state).filter(([key]) => ["translateTo"].includes(key))
+          Object.entries(state).filter(([key]) =>
+            ["translateTo", "originalText", "translatedText"].includes(key)
+          )
         ),
     }
   )

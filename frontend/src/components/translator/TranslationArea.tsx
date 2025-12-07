@@ -5,6 +5,7 @@ import useTranslationStore from "@/hooks/useTranslationStore";
 import useFavoriteTranslationsStore from "@/hooks/useFavoriteTransaltionsStore";
 import useAlternativeTranslationsStore from "@/hooks/useAlternativeTranslationsStore";
 import useUsagesStore from "@/hooks/useUsagesStore";
+import useHistoryStore from "@/hooks/useHistoryStore";
 import useSyncValues from "@/hooks/useSyncValues";
 import {
   fetchWordUsages,
@@ -29,6 +30,7 @@ export default function TranslationArea() {
   const { addAlternativeTranslation, clearAlternativeTranslations } =
     useAlternativeTranslationsStore();
   const { setWordUsages, setSentencesUsages, clearUsages } = useUsagesStore();
+  const { addHistoryTranslation } = useHistoryStore();
   // -----------------------------------------------------------------------------------
 
   const debouncedOriginal = useDebouncedValue(originalText, 500) as string;
@@ -39,6 +41,12 @@ export default function TranslationArea() {
   const [favoriteTranslationId, setFavoriteTranslationId] = useState<
     number | undefined
   >(undefined);
+  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
+
+  // Отключаем флаг начальной загрузки после первого рендера
+  useEffect(() => {
+    setIsInitialLoad(false);
+  }, []);
 
   // Запрос на перевод при изменении debounce значения оригинального текста
   useEffect(() => {
@@ -49,10 +57,27 @@ export default function TranslationArea() {
       return;
     }
 
+    // Пропускаем запрос при начальной загрузке, если уже есть перевод
+    if (isInitialLoad && translatedText) {
+      return;
+    }
+
     setIsFetching(true);
     fetchTranslation(debouncedOriginal, translateTo, attemptCount)
       .then((translatedText) => {
         setTranslatedText(translatedText);
+
+        // Сохраняем в историю
+        if (translatedText && debouncedOriginal) {
+          addHistoryTranslation({
+            id: Date.now(),
+            sourceLanguage: translateTo === "nanai" ? "russian" : "nanai",
+            sourceText: debouncedOriginal,
+            targetLanguage: translateTo,
+            targetText: translatedText,
+            translatedAt: new Date(),
+          });
+        }
 
         if (debouncedOriginal.split(" ").length === 1) {
           // Очищаем использования перед получением новых
@@ -92,6 +117,9 @@ export default function TranslationArea() {
 
   // Меняем местами тексты при смене языка
   useEffect(() => {
+    // Пропускаем swap при начальной загрузке
+    if (isInitialLoad) return;
+
     setIsSwapping(true);
     setOriginalText(translatedText);
     setTranslatedText(originalText);
