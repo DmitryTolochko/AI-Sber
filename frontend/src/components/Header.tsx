@@ -21,7 +21,7 @@ export default function Header() {
   return (
     <header className="w-full py-[0.833vw] flex justify-between items-center border-b border-[#B8B8B8] px-[10.417vw] [box-shadow:0_0_5.5_0_#0000001F]">
       <div className="text-[1.389vw] text-[#2C734E]">
-        <span className="font-medium">CБЕР</span> Переводчик
+        <span className="font-medium">AI</span> Переводчик
       </div>
 
       <div className="flex gap-2">

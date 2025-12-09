@@ -61,7 +61,7 @@ async def word_get(
                 translations.add(entry["translation"])
 
     if not translations:
-        raise NotFoundException(detail="Word not found")
+        raise NotFoundException(detail="Word not found", obj=word)
 
     return TranslationResponse(
         original=word,
