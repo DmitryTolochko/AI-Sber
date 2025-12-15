@@ -7,7 +7,7 @@ import { UsagesStore } from "@/utils/interfaces";
  */
 const useUsagesStore = create<UsagesStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       wordUsages: [],
       sentencesUsages: [],
       setWordUsages: (words) => set({ wordUsages: words }),

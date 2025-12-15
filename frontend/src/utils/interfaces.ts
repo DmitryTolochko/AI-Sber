@@ -78,28 +78,13 @@ export interface AlternativeTranslationsStore {
   clearAlternativeTranslations: () => void;
 }
 
-export interface UseFetchRequestOptions<T> {
-  url: string;
-  config?: AxiosRequestConfig;
-  enabled?: boolean;
-  onSuccess?: (data: T) => void;
-  onError?: (error: any) => void;
-  onFinally?: () => void;
-}
-
-export interface UseFetchRequestReturn<T> {
-  data: T | null;
-  error: any;
-  isFetching: boolean;
-  refetch: () => void;
-}
 
 export interface UsagesStore {
   wordUsages: string[];
   sentencesUsages: { original: string; translation: string }[];
   setWordUsages: (words: string[]) => void;
   setSentencesUsages: (
-    sentences: { original: string; translated: string }[]
+    sentences: { original: string; translation: string }[]
   ) => void;
   clearUsages: () => void;
 }

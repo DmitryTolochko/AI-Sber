@@ -111,7 +111,12 @@ export default function TranslationArea() {
       setWordUsages(usages);
     });
     fetchSentencesUsages(word).then((usages) => {
-      setSentencesUsages(usages);
+      setSentencesUsages(
+        usages.map((usage) => ({
+          original: usage.original,
+          translation: usage.translated,
+        }))
+      );
     });
   };
 
