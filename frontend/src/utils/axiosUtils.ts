@@ -1,12 +1,45 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+import {
+  WordUsagesDTO,
+  SentencesUsagesDTO,
+  TranslationResponseDTO,
+} from "./types";
 
-export const buildTranslationUrl = (originalText: string, translateTo: "russian" | "nanai") => {
+export const buildTranslationUrl = (
+  originalText: string,
+  translateTo: "russian" | "nanai",
+  attempt: number
+) => {
   const prefix = translateTo === "nanai" ? "to-nanai" : "to-russian";
   const field = translateTo === "nanai" ? "russian_text" : "nanai_text";
-  return `http://localhost:3001/translation/${prefix}?${field}=${originalText}`;
+  return `http://localhost:5174/translation/${prefix}?${field}=${originalText}&attempt=${attempt}`;
 };
 
-export const fetchTranslation = (text: string, translateTo: "russian" | "nanai") => {
-    return axios.get(buildTranslationUrl(text, translateTo))
-    .then((response) => response.data.text_to_translated);
-}
+export const fetchTranslation = (
+  text: string,
+  translateTo: "russian" | "nanai",
+  attempt: number = 1
+) => {
+  return axios
+    .get(buildTranslationUrl(text, translateTo, attempt)) // По умолчанию 1 чтобы использовался дефолтный перевод по полной строке
+    .then(
+      (response: AxiosResponse<TranslationResponseDTO>) =>
+        response.data.text_to_translated
+    );
+};
+
+export const fetchWordUsages = (word: string) => {
+  return axios
+    .get(`http://localhost:5174/dictionary/get-word?word=${word}`)
+    .then(
+      (response: AxiosResponse<WordUsagesDTO>) => response.data.translations
+    );
+};
+
+export const fetchSentencesUsages = (word: string) => {
+  return axios
+    .get(`http://localhost:5174/dictionary/sentences?word=${word}`)
+    .then(
+      (response: AxiosResponse<SentencesUsagesDTO>) => response.data.matches
+    );
+};
