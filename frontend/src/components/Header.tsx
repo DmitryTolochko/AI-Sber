@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Button from "./ui/Button";
 import useNavigationStore from "@/hooks/useNavigationStore";
-import useLocalStorage from "@/hooks/useLocalStorage";
 import clsx from "clsx";
 import ChatIcon from "@/icons/ChatIcon";
 import FavoritesIcon from "@/icons/FavoritesIcon";
@@ -13,17 +12,16 @@ import HistroyIcon from "@/icons/HistroyIcon";
 export default function Header() {
   const router = useRouter();
   const { navigationTab, setNavigationTab } = useNavigationStore();
-  const { setValue } = useLocalStorage();
 
   useEffect(() => {
     router.push(`/${navigationTab}`);
-    setValue("lastNavigationTab", navigationTab);
+    setNavigationTab(navigationTab);
   }, [navigationTab]);
 
   return (
     <header className="w-full py-[0.833vw] flex justify-between items-center border-b border-[#B8B8B8] px-[10.417vw] [box-shadow:0_0_5.5_0_#0000001F]">
       <div className="text-[1.389vw] text-[#2C734E]">
-        <span className="font-medium">CБЕР</span> Переводчик
+        <span className="font-medium">AI</span> Переводчик
       </div>
 
       <div className="flex gap-2">
