@@ -21,7 +21,7 @@ def get_translation_service() -> TranslationService:
         base_model_path = project_root / "mbart"
         lora_dir = base_model_path / "loras"
 
-        print(f"Инициализация TranslationService:")
+        print("Инициализация TranslationService:")
         print(f"Базовая модель: {base_model_path}")
         print(f"LoRA адаптеры: {lora_dir}")
 
