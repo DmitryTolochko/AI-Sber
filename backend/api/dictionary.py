@@ -9,8 +9,8 @@ from schemas.base import SentenceResponse
 
 router = APIRouter(prefix="/dictionary", tags=["Dictionary"])
 
-DICTIONARY_FILE = "../model/finetuning/datasets/all_dicts.json"
-SENTENCES_FILE = "../model/finetuning/datasets/aug_17_11.json"
+DICTIONARY_FILE = "model/finetuning/datasets/all_dicts.json"
+SENTENCES_FILE = "model/finetuning/datasets/aug_17_11.json"
 
 
 def load_json(file) -> List[Dict[str, str]]:
