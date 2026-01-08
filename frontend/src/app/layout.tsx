@@ -9,7 +9,7 @@ const font = Noto_Sans_Display({
 });
 
 export const metadata: Metadata = {
-  title: "SBER Transaltor",
+  title: "AI Transaltor",
   description: "Переводчик с нанайского",
 };
 
@@ -20,6 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
       <body className={`${font.variable} antialiased `}>
         <Header />
         <main className="lg:mx-[10.417vw] mx-[7vw]">{children}</main>

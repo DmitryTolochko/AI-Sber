@@ -1,18 +1,18 @@
-import uvicorn
-import sys
 import os
+import sys
+import traceback
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+
+import uvicorn
 from dotenv import load_dotenv
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from api import api_router
 from api.translation import get_translation_service
-from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv("example.env")
 
-
-# app = FastAPI()
-# app.add_middleware()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,7 +22,6 @@ async def lifespan(app: FastAPI):
         print("Server ready")
     except Exception as e:
         print("Server error")
-        import traceback
         traceback.print_exc()
         sys.exit(1)
     yield
@@ -37,7 +36,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[ "*" ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,4 +45,9 @@ app.add_middleware(
 app.include_router(api_router)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host=os.getenv("DEV_HOST"), port=int(os.getenv("DEV_PORT")), reload=False)
+    uvicorn.run(
+        "main:app",
+        host=os.getenv("DEV_HOST"),
+        port=int(os.getenv("DEV_PORT")),
+        reload=False
+    )
