@@ -105,5 +105,4 @@ jobs:
       - name: Run tests
         run: |
           pytest backend/tests.py -v
-        continue-on-error: true
 
