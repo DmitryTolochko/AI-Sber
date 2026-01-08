@@ -7,6 +7,32 @@ on:
     branches: [ main, master, develop ]
 
 jobs:
+  pep8-check:
+    name: PEP8 Style Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install PEP8 checkers
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+      
+      - name: PEP8 check with flake8
+        run: |
+          flake8 backend/ --config=setup.cfg --statistics --count
+
   backend-lint:
     name: Backend Lint & Type Check
     runs-on: ubuntu-latest
@@ -94,13 +120,15 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest pytest-asyncio httpx fastapi starlette pydantic
+          pip install pytest pytest-asyncio httpx
+          if [ -f backend/requirements.txt ]; then
+            pip install -r backend/requirements.txt
+          fi
           if [ -f model/requirements.txt ]; then
             pip install -r model/requirements.txt
           fi
       
       - name: Run tests
         run: |
-          pytest backend/ -v || echo "No tests found, skipping"
-        continue-on-error: true
+          pytest backend/tests.py -v
 
