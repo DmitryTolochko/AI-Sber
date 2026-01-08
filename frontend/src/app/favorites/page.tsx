@@ -11,25 +11,31 @@ export default function Favorites() {
         Избранные переводы
       </h1>
       <div className="w-full flex flex-col-reverse gap-[1.389vw]">
-        {favoriteTranslations.map((item, index) => {
-          return (
-            <div
-              key={index}
-              className="flex max-lg:flex-col lg:gap-[1.389vw] gap-[-2px] "
-            >
-              <FavoriteItem
-                className=" max-lg:rounded-b-[0]"
-                sourceLanguage={item.sourceLanguage}
-                content={item.sourceContent}
-              />
-              <FavoriteItem
-                className="max-lg:translate-y-[-1px] max-lg:rounded-t-[0] max-lg:mb-[3vw]"
-                sourceLanguage={item.targetLanguage}
-                content={item.targetContent}
-              />
-            </div>
-          );
-        })}
+        {favoriteTranslations.length === 0 ? (
+          <p className="lg:text-[1.111vw] text-[3.5vw] text-gray-500">
+            Избранные переводы пусты
+          </p>
+        ) : (
+          favoriteTranslations.map((item, index) => {
+            return (
+              <div
+                key={index}
+                className="flex max-lg:flex-col lg:gap-[1.389vw] gap-[-2px] "
+              >
+                <FavoriteItem
+                  className=" max-lg:rounded-b-[0]"
+                  sourceLanguage={item.sourceLanguage}
+                  content={item.sourceContent}
+                />
+                <FavoriteItem
+                  className="max-lg:translate-y-[-1px] max-lg:rounded-t-[0] max-lg:mb-[3vw]"
+                  sourceLanguage={item.targetLanguage}
+                  content={item.targetContent}
+                />
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

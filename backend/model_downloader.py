@@ -1,11 +1,17 @@
-﻿import gdown
-import os
+﻿import os
 
-MODEL_REMOTE_URL = "https://drive.google.com/drive/folders/1XcXWzn22uZ44z78yvxlyYKvMPPrC1riP?usp=sharing"
+import gdown
+
+MODEL_REMOTE_URL = (
+    "https://drive.google.com/drive/folders/"
+    "1XcXWzn22uZ44z78yvxlyYKvMPPrC1riP?usp=sharing"
+)
 MODEL_LOCAL_PATH = "mbart"
-os.makedirs(MODEL_LOCAL_PATH, exist_ok=True)
+
 
 def download_model():
+    """Download model from Google Drive."""
+    os.makedirs(MODEL_LOCAL_PATH, exist_ok=True)
     print("Скачиваю модель из Google Drive...")
     gdown.download_folder(
         MODEL_REMOTE_URL,
@@ -15,4 +21,6 @@ def download_model():
         remaining_ok=True
     )
 
-download_model()
+
+if __name__ == "__main__":
+    download_model()
