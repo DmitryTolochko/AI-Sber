@@ -1,7 +1,18 @@
-from typing import Literal
+from typing import List, Literal
+
 
 class TranslatorConfig:
-    def __init__(self, hugging_face_token:str, model_id: str,  cache_dir: str, lora_dir: str, filenames: list[str], target_language: Literal["russian", "nanai"] = "russian",):
+    """Configuration for translator service."""
+
+    def __init__(
+        self,
+        hugging_face_token: str,
+        model_id: str,
+        cache_dir: str,
+        lora_dir: str,
+        filenames: List[str],
+        target_language: Literal["russian", "nanai"] = "russian",
+    ):
         self.hugging_face_token = hugging_face_token
         self.model_id = model_id
         self.cache_dir = cache_dir

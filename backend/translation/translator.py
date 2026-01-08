@@ -1,13 +1,10 @@
-import logging
-import os
+from pathlib import Path
+from typing import Dict, List, Literal, Tuple
+
 import torch
-from typing import Literal, Dict, Tuple, List
-from .config import TranslatorConfig
 from dotenv import load_dotenv
-from huggingface_hub import hf_hub_download, try_to_load_from_cache
 from peft import PeftModel
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-from pathlib import Path
 
 load_dotenv()
 
@@ -19,6 +16,7 @@ class TranslationService:
     """
 
     def __init__(self, base_model_path: str, lora_dir: str):
+        """Initialize translation service with model paths."""
         self.base_model_path = Path(base_model_path)
         self.lora_dir = Path(lora_dir)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -29,8 +27,13 @@ class TranslationService:
 
         self._load_all_models()
 
-    def translate_with_attempts(self, text: str, attempt: int, target_language: Literal["russian", "nanai"]):
-        """Перевод с несколькими попытками разбиения текста"""
+    def translate_with_attempts(
+        self,
+        text: str,
+        attempt: int,
+        target_language: Literal["russian", "nanai"]
+    ) -> str:
+        """Перевод с несколькими попытками разбиения текста."""
         all_variants = []
 
         chunks = self.split_for_translation(text, attempt)
@@ -42,16 +45,18 @@ class TranslationService:
 
         full_translation = " ".join(translated_chunks)
 
-        if text.strip().endswith(('.', '!', '?', '…')) and not full_translation.strip().endswith(
-                ('.', '!', '?', '…')):
+        if (
+            text.strip().endswith(('.', '!', '?', '…'))
+            and not full_translation.strip().endswith(('.', '!', '?', '…'))
+        ):
             full_translation = full_translation.strip() + text.strip()[-1]
 
         all_variants.append(full_translation.strip())
 
         return all_variants[0]
 
-    def split_for_translation(self, text: str, attempt: int):
-        """Разбиение текста на части для перевода"""
+    def split_for_translation(self, text: str, attempt: int) -> List[str]:
+        """Разбиение текста на части для перевода."""
         if attempt < 1:
             raise ValueError("attempt должен быть >= 1")
 
@@ -77,6 +82,7 @@ class TranslationService:
 
         while sum(chunk_sizes) < n_words:
             chunk_sizes.append(1)
+
         result = []
         idx = 0
 
@@ -89,8 +95,13 @@ class TranslationService:
         print(f"Разбиение на {len(result)} частей: {result}")
         return result
 
-    def translate(self, text: str, target_language: Literal["russian", "nanai"], max_length: int = 1000) -> str:
-        """Основной метод перевода"""
+    def translate(
+        self,
+        text: str,
+        target_language: Literal["russian", "nanai"],
+        max_length: int = 1000
+    ) -> str:
+        """Основной метод перевода."""
         if not text or len(text) == 0:
             raise ValueError("Текст для перевода не может быть пустым.")
 
@@ -100,7 +111,9 @@ class TranslationService:
         model, tokenizer = self.models[target_language]
 
         # Подготовка входных данных
-        inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512).to(self.device)
+        inputs = tokenizer(
+            text, return_tensors="pt", truncation=True, max_length=512
+        ).to(self.device)
 
         # Генерация перевода
         with torch.no_grad():
@@ -114,7 +127,7 @@ class TranslationService:
         return tokenizer.decode(outputs[0], skip_special_tokens=True)
 
     def _load_all_models(self) -> None:
-        """Загружает все модели (с LoRA адаптерами)"""
+        """Загружает все модели (с LoRA адаптерами)."""
         print("Загрузка моделей с LoRA адаптерами...")
 
         # Загружаем модель для перевода с нанайского на русский
@@ -126,7 +139,7 @@ class TranslationService:
         print("✅ Все модели загружены")
 
     def _load_model_with_lora(self, lora_name: str) -> Tuple:
-        """Загружает базовую модель с LoRA адаптером"""
+        """Загружает базовую модель с LoRA адаптером."""
         lora_path = self.lora_dir / lora_name
 
         print(f"  Загрузка LoRA адаптера: {lora_name}")

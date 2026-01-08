@@ -1,6 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import Button from "./ui/Button";
 import useNavigationStore from "@/hooks/useNavigationStore";
@@ -13,10 +12,10 @@ export default function Header() {
   const router = useRouter();
   const { navigationTab, setNavigationTab } = useNavigationStore();
 
-  useEffect(() => {
-    router.push(`/${navigationTab}`);
-    setNavigationTab(navigationTab);
-  }, [navigationTab]);
+  const handleNavigation = (tab: "translator" | "favorites" | "history") => {
+    setNavigationTab(tab);
+    router.push(tab === "translator" ? "/" : `/${tab}`);
+  };
 
   return (
     <header className="w-full lg:py-[0.833vw] py-[3vw] flex lg:flex-row flex-col justify-between items-center border-b border-[#B8B8B8] lg:px-[10.417vw] px-[2.5vw] [box-shadow:0_0_5.5_0_#0000001F]">
@@ -30,7 +29,7 @@ export default function Header() {
             "lg:text-[1.111vw] text-[3vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
             navigationTab === "translator" && "text-[#2C734E]"
           )}
-          onClick={() => setNavigationTab("translator")}
+          onClick={() => handleNavigation("translator")}
         >
           <div className="lg:size-[1.806vw] size-[4vw]">
             <ChatIcon />
@@ -43,7 +42,7 @@ export default function Header() {
             "lg:text-[1.111vw] text-[3vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
             navigationTab === "favorites" && "text-[#2C734E]"
           )}
-          onClick={() => setNavigationTab("favorites")}
+          onClick={() => handleNavigation("favorites")}
         >
           <div className="lg:size-[1.806vw] size-[4vw]">
             <FavoritesIcon />
@@ -56,7 +55,7 @@ export default function Header() {
             "lg:text-[1.111vw] text-[3vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
             navigationTab === "history" && "text-[#2C734E]"
           )}
-          onClick={() => setNavigationTab("history")}
+          onClick={() => handleNavigation("history")}
         >
           <div className="lg:size-[1.806vw] size-[4vw]">
             <HistroyIcon />

@@ -5,6 +5,10 @@ import {
   TranslationResponseDTO,
 } from "./types";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "localhost";
+const API_PORT = process.env.NEXT_PUBLIC_API_PORT || "5174";
+const API_BASE = `${API_URL}:${API_PORT}`;
+
 export const buildTranslationUrl = (
   originalText: string,
   translateTo: "russian" | "nanai",
@@ -12,7 +16,7 @@ export const buildTranslationUrl = (
 ) => {
   const prefix = translateTo === "nanai" ? "to-nanai" : "to-russian";
   const field = translateTo === "nanai" ? "russian_text" : "nanai_text";
-  return `http://localhost:5174/translation/${prefix}?${field}=${originalText}&attempt=${attempt}`;
+  return `${API_BASE}/translation/${prefix}?${field}=${originalText}&attempt=${attempt}`;
 };
 
 export const fetchTranslation = (
@@ -31,7 +35,7 @@ export const fetchTranslation = (
 
 export const fetchWordUsages = (word: string, signal?: AbortSignal) => {
   return axios
-    .get(`http://localhost:5174/dictionary/get-word?word=${word}`, { signal })
+    .get(`${API_BASE}/dictionary/get-word?word=${word}`, { signal })
     .then(
       (response: AxiosResponse<WordUsagesDTO>) => response.data.translations
     );
@@ -39,7 +43,7 @@ export const fetchWordUsages = (word: string, signal?: AbortSignal) => {
 
 export const fetchSentencesUsages = (word: string, signal?: AbortSignal) => {
   return axios
-    .get(`http://localhost:5174/dictionary/sentences?word=${word}`, { signal })
+    .get(`${API_BASE}/dictionary/sentences?word=${word}`, { signal })
     .then(
       (response: AxiosResponse<SentencesUsagesDTO>) => response.data.matches
     );
