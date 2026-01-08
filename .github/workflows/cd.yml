@@ -48,8 +48,7 @@ jobs:
         run: |
           mkdir -p deployment
           cp -r backend deployment/
-          cp -r model deployment/
-          cp main.py deployment/
+          cp -r model deployment/ || true
           cp -r frontend/.next deployment/frontend-build || true
           tar -czf deployment.tar.gz deployment/
       
