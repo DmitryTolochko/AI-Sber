@@ -104,6 +104,6 @@ jobs:
       
       - name: Run tests
         run: |
-          pytest backend/tests.py -v || echo "No tests found, skipping"
+          pytest backend/tests.py -v
         continue-on-error: true
 
