@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
         print("Server starting")
         get_translation_service()
         print("Server ready")
-    except Exception as e:
+    except Exception:
         print("Server error")
         traceback.print_exc()
         sys.exit(1)
